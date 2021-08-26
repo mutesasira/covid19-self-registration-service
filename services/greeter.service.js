@@ -4,7 +4,7 @@
  * @typedef {import('moleculer').Context} Context Moleculer's Context
  */
 
- 
+
 module.exports = {
 	name: "greeter",
 
@@ -23,7 +23,7 @@ module.exports = {
 	/**
 	 * Actions
 	 */
-	 
+
 	actions: {
 
 		/**
@@ -31,23 +31,62 @@ module.exports = {
 		 *
 		 * @returns
 		 */
-		clientCategory: {
+		checkId: {
 			rest: {
-				method: "GET",
-				path: "/clientCategory"
+				method: 'GET',
+				path: '/checkId'
+			},
+
+			async handler(ctx) {
+				const {
+					identifier,
+					value
+				} = ctx.params;
+
+				return ctx.call('dhis2.get', { url: 'trackedEntityInstances', program: 'yDuAzyqYABS', ouMode: 'ALL', filter: `${identifier}:eq:${value}` });
+			}
+
+		},
+
+		post: {
+			rest: {
+				method: "POST",
+				path: "/insert"
 			},
 			async handler(ctx) {
-				return ctx.call('dhis2.get', { url: 'trackedEntityAttributes.json'});
+				try {
+					const response = await ctx.call('dhis2.post', { url: 'trackedEntityInstances', ...ctx.params });
+					console.log(response)
+					return response;
+				} catch (error) {
+					console.log()
+				}
 			}
 		},
 
-		districtSubcounty: {
+		pdf: {
 			rest: {
 				method: "GET",
-				path: "/districtSubcounty"
+				path: "/insert"
 			},
 			async handler(ctx) {
-				return ctx.call('dhis2.get', { url: 'optionSets.json'});
+				try {
+					const response = await ctx.call('dhis2.post', { url: 'trackedEntityInstances', ...ctx.params });
+					console.log(response)
+					return response;
+				} catch (error) {
+					console.log()
+				}
+			}
+		},
+
+		options: {
+			rest: {
+				method: "GET",
+				path: "/options"
+			},
+			async handler(ctx) {
+				return ctx.call('dhis2.get', { url: `optionSets/${ctx.params.optionSet}.json`, fields: 'options[name,code]' });
 			}
 		},
 
