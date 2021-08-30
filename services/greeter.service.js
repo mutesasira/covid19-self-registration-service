@@ -31,6 +31,22 @@ module.exports = {
 		 *
 		 * @returns
 		 */
+
+		validateNin:{
+			rest:{
+				method: 'GET',
+				path: '/validateNin'
+			},
+			async handler(ctx) {
+				const {
+					value
+				} = ctx.params;
+				const response = await ctx.call('dhis2.get', { url: 'trackedEntityInstances', program: 'yDuAzyqYABS', ouMode: 'ALL', fields:'*', filter: `Ewi7FUfcHAD:eq:${value}` });
+				return response['trackedEntityInstances'].length>0?false:true;
+				
+			}
+		},
+
 		checkId: {
 			rest: {
 				method: 'GET',
@@ -56,14 +72,13 @@ module.exports = {
 			async handler(ctx) {
 				try {
 					const response = await ctx.call('dhis2.post', { url: 'trackedEntityInstances', ...ctx.params });
-					console.log(response)
 					return response;
 				} catch (error) {
 					console.log()
 				}
 			}
 		},
-
+	
 		pdf: {
 			rest: {
 				method: "GET",
@@ -118,6 +133,19 @@ module.exports = {
 				const { organisationUnits } = await ctx.call('dhis2.get', { url: `organisationUnits/${ctx.params.district}.json`, includeDescendants: true, fields: 'id,name,level' });
 				return organisationUnits.filter((ou) => ou.level === 5)
 			}
+		}
+	},
+	vacfacilities:{
+		rest:{
+			method: 'GET',
+			path: '/vacfacilities'
+		},
+		async handler(ctx) {
+			
+			const {vacfacility} = await ctx.call('dhis2.get', { url: `dataSets/nTlQefWKMmb.json`, fields: 'organisationUnits[id,name,parent[id,name,parent[id,name]]' });
+			return vacfacilities.filter((ou) => ou.level === 5)
+			
+			
 		}
 	},
 
